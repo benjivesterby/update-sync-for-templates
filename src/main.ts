@@ -148,17 +148,16 @@ async function run(): Promise<void> {
 
     const sync = await YAML.parse(syncYmlContent)
 
-
-    core.info(sync)
+    core.info(YAML.stringify(sync))
 
     // const updatedReadme = syncYmlContent.replace(
     //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
     //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `
     // )
 
-    await fs.writeFile(syncYmlPath, sync.toString())
+    await fs.writeFile(syncYmlPath, YAML.stringify(sync))
 
-    if (syncYmlContent !== sync.toString()) {
+    if (syncYmlContent !== YAML.stringify(sync)) {
       core.info('Changes found, committing')
       await git.addConfig('user.email', authorEmail)
       await git.addConfig('user.name', authorName)

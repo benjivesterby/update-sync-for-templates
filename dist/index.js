@@ -131,13 +131,13 @@ function run() {
                 encoding: 'utf-8'
             });
             const sync = yield yaml_1.default.parse(syncYmlContent);
-            core.info(sync);
+            core.info(yaml_1.default.stringify(sync));
             // const updatedReadme = syncYmlContent.replace(
             //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
             //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `
             // )
-            yield fs_1.promises.writeFile(syncYmlPath, sync.toString());
-            if (syncYmlContent !== sync.toString()) {
+            yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
+            if (syncYmlContent !== yaml_1.default.stringify(sync)) {
                 core.info('Changes found, committing');
                 yield git.addConfig('user.email', authorEmail);
                 yield git.addConfig('user.name', authorName);
