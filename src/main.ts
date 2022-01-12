@@ -33,7 +33,7 @@ async function run(): Promise<void> {
     const authorEmail =
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
-    const baseDir = process.cwd() //path.join(process.cwd(), core.getInput('cwd') || '')
+    const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
     const sharedRepo = 'https://github.com/devnw/shared.git'
     const sharedDir = path.join(
       baseDir,
@@ -117,7 +117,7 @@ async function run(): Promise<void> {
     const output = `${reposProducedByThis.join('\n* ')} `
 
 
-    const git = simpleGit()
+    const git = simpleGit(baseDir)
 
     git.clone(sharedRepo, sharedDir)
 

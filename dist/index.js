@@ -49,7 +49,7 @@ function run() {
         try {
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
-            const baseDir = process.cwd(); //path.join(process.cwd(), core.getInput('cwd') || '')
+            const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const sharedRepo = 'https://github.com/devnw/shared.git';
             const sharedDir = path_1.default.join(baseDir, "shared");
             core.info(`Base Directory: ${baseDir}\n
@@ -106,7 +106,7 @@ function run() {
                 d.templateRepository.owner.login === org)
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
             const output = `${reposProducedByThis.join('\n* ')} `;
-            const git = promise_1.default();
+            const git = promise_1.default(baseDir);
             git.clone(sharedRepo, sharedDir);
             core.info(`base directory files`);
             fs_1.promises.readdir(baseDir, { withFileTypes: true })
