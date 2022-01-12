@@ -34,7 +34,7 @@ async function run(): Promise<void> {
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
     const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
-    const sharedRepo = 'https://github.com/devnw/shared'
+    const sharedRepo = 'https://github.com/devnw/shared.git'
     const sharedDir = path.join(
       baseDir,
       "shared",
