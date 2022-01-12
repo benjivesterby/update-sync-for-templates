@@ -125,7 +125,7 @@ async function run(): Promise<void> {
     fs.readdir(baseDir, { withFileTypes: true })
       .then(files => {
         for (const file of files) {
-          core.info(`Checking ${file.name}`)
+          core.info(`Base Directory: Checking ${file.name}`)
         }
       })
 
@@ -133,7 +133,7 @@ async function run(): Promise<void> {
     fs.readdir(sharedDir, { withFileTypes: true })
       .then(files => {
         for (const file of files) {
-          core.info(`Checking ${file.name}`)
+          core.info(`Shared Directory: Checking ${file.name}`)
         }
       })
 
