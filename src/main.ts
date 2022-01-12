@@ -33,11 +33,11 @@ async function run(): Promise<void> {
     const authorEmail =
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
-    const baseDir = path.join(process.cwd() || '.')
+    const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
     const sharedRepo = 'https://github.com/devnw/shared'
     const syncYmlPath = path.join(
       // baseDir,
-      "shared",
+      "./shared",
       core.getInput('syncFile') || 'sync.yml'
     )
 
