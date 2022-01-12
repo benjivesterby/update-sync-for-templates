@@ -107,7 +107,12 @@ function run() {
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
             const output = `${reposProducedByThis.join('\n* ')} `;
             const git = promise_1.default(baseDir);
-            git.clone(sharedRepo, sharedDir);
+            try {
+                yield git.clone(sharedRepo, sharedDir);
+            }
+            catch (error) {
+                core.setFailed(error.message);
+            }
             core.info(`base directory files`);
             fs_1.promises.readdir(baseDir, { withFileTypes: true })
                 .then(files => {

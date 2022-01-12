@@ -119,7 +119,12 @@ async function run(): Promise<void> {
 
     const git = simpleGit(baseDir)
 
-    git.clone(sharedRepo, sharedDir)
+    try {
+      await git.clone(sharedRepo, sharedDir)
+    }
+    catch (error: any) {
+      core.setFailed(error.message)
+    }
 
     core.info(`base directory files`)
     fs.readdir(baseDir, { withFileTypes: true })
