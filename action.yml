@@ -1,19 +1,19 @@
-name: 'Template Repository Usage Action'
-description: 'A GitHub action to automatically update a template repository README with a list of repos that used it in an organisation.'
-author: 'Matthew Elphick'
+name: 'Template Repository Use - Update Shared Sync'
+description: 'A GitHub action to automatically update the sync.yml file of a shared file repository.'
+author: 'Benji Vesterby'
 inputs:
   token:
     required: true
-    description: 'A personal access token that can access your organisation repos, see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token for more.'
+    description: 'A personal access token that can access your org repos, see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token for more.'
   org:
     required: false
-    description: 'A way to override the organisation the action is checking for usage of the template'
+    description: 'A way to override the org the action is checks for usage of the template'
   repo:
     required: false
     description: 'A way to override the repo the action is checking for usage of in the given org'
-  readme_path:
+  sync_file:
     required: false
-    description: 'The path to the README to update'
+    description: 'The path to the sync.yml to update'
   author_name:
     required: false
     description: 'The name of the user that will be displayed as the author of the commit'
@@ -24,6 +24,9 @@ inputs:
     required: false
     description: 'The directory where your repository is located. You should use actions/checkout first to set it up'
     default: '.'
+  # siging_key:
+  #   required: false
+  #   description: 'The signing key to be used for signing commits'
 runs:
   using: 'node12'
   main: 'dist/index.js'

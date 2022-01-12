@@ -1,8 +1,9 @@
-import {promises as fs} from 'fs'
+import { promises as fs } from 'fs'
 import path from 'path'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import simpleGit from 'simple-git/promise'
+import YAML from 'yaml'
 
 interface Response {
   repositoryOwner: {
@@ -30,14 +31,14 @@ interface Item {
 async function run(): Promise<void> {
   try {
     const authorEmail =
-      core.getInput('author_email') || 'matt.a.elphy@gmail.com'
-    const authorName = core.getInput('author_name') || 'Matthew Elphick'
+      core.getInput('author_email') || 'benji@devnw.com'
+    const authorName = core.getInput('author_name') || 'Benji Vesterby'
     const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
-    const readmePath = path.join(
+    const syncYmlPath = path.join(
       baseDir,
-      core.getInput('readmePath') || 'README.md'
+      core.getInput('syncFile') || 'sync.yml'
     )
-    const readmeContent = await fs.readFile(readmePath, {
+    const syncYmlContent = await fs.readFile(syncYmlPath, {
       encoding: 'utf-8'
     })
 
@@ -45,9 +46,10 @@ async function run(): Promise<void> {
     const octokit = github.getOctokit(token, {
       previews: ['baptiste']
     })
-    const {repo} = github.context
+    const { repo } = github.context
     const org = core.getInput('org') || repo.owner
     const repoName = core.getInput('repo') || repo.repo
+    // const signingKey = core.getInput('signingKey') || ''
 
     let items: Item[] = []
     let nextPageCursor: string | null | undefined = null
@@ -102,25 +104,26 @@ async function run(): Promise<void> {
       )
       .map(d => `[${d.nameWithOwner}](${d.url})`)
 
-    const output = `# ${reposProducedByThis.length} Repositories using ${
-      repoName === repo.repo ? 'template' : `${repoName}`
-    }\n\n${
-      reposProducedByThis.length ? `* ${reposProducedByThis.join('\n* ')}` : ''
-    }`
+    const output = `${reposProducedByThis.join('\n* ')}`
 
-    const updatedReadme = readmeContent.replace(
-      /<!-- TEMPLATE_LIST_START -->[\s\S]+<!-- TEMPLATE_LIST_END -->/,
-      `<!-- TEMPLATE_LIST_START -->\n${output}\n<!-- TEMPLATE_LIST_END -->`
-    )
+    const sync = YAML.parse(syncYmlContent)
 
-    await fs.writeFile(readmePath, updatedReadme)
 
-    if (readmeContent !== updatedReadme) {
+    core.info(sync.group.repos.toString())
+
+    // const updatedReadme = syncYmlContent.replace(
+    //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
+    //   `<!-- TEMPLATE_LIST_START -->\n${output}\n<!-- TEMPLATE_LIST_END -->`
+    // )
+
+    await fs.writeFile(syncYmlPath, sync.toString())
+
+    if (syncYmlContent !== sync.toString()) {
       core.info('Changes found, committing')
       const git = simpleGit(baseDir)
       await git.addConfig('user.email', authorEmail)
       await git.addConfig('user.name', authorName)
-      await git.add(readmePath)
+      await git.add(syncYmlPath)
       await git.commit(`docs: 📝 Updating template usage list`, undefined, {
         '--author': `"${authorName} <${authorEmail}>"`
       })
@@ -129,7 +132,7 @@ async function run(): Promise<void> {
     } else {
       core.info('No changes, skipping')
     }
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
 }
