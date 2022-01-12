@@ -108,6 +108,14 @@ function run() {
             const output = `${reposProducedByThis.join('\n* ')} `;
             const git = promise_1.default();
             git.clone(sharedRepo, sharedDir);
+            core.info(`base directory files`);
+            fs_1.promises.readdir(baseDir, { withFileTypes: true })
+                .then(files => {
+                for (const file of files) {
+                    core.info(`Checking ${file.name}`);
+                }
+            });
+            core.info(`shared directory files`);
             fs_1.promises.readdir(sharedDir, { withFileTypes: true })
                 .then(files => {
                 for (const file of files) {

@@ -121,6 +121,15 @@ async function run(): Promise<void> {
 
     git.clone(sharedRepo, sharedDir)
 
+    core.info(`base directory files`)
+    fs.readdir(baseDir, { withFileTypes: true })
+      .then(files => {
+        for (const file of files) {
+          core.info(`Checking ${file.name}`)
+        }
+      })
+
+    core.info(`shared directory files`)
     fs.readdir(sharedDir, { withFileTypes: true })
       .then(files => {
         for (const file of files) {
