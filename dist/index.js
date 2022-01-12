@@ -114,14 +114,14 @@ function run() {
                 core.setFailed(error.message);
             }
             core.info(`base directory files`);
-            fs_1.promises.readdir(baseDir, { withFileTypes: true })
+            yield fs_1.promises.readdir(baseDir, { withFileTypes: true })
                 .then(files => {
                 for (const file of files) {
                     core.info(`Base Directory: Checking ${file.name}`);
                 }
             });
             core.info(`shared directory files`);
-            fs_1.promises.readdir(sharedDir, { withFileTypes: true })
+            yield fs_1.promises.readdir(sharedDir, { withFileTypes: true })
                 .then(files => {
                 for (const file of files) {
                     core.info(`Shared Directory: Checking ${file.name}`);
@@ -131,7 +131,7 @@ function run() {
                 encoding: 'utf-8'
             });
             const sync = yaml_1.default.parse(syncYmlContent);
-            core.info(sync.group.repos.toString());
+            core.info(sync.group.repos);
             // const updatedReadme = syncYmlContent.replace(
             //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
             //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `

@@ -127,7 +127,7 @@ async function run(): Promise<void> {
     }
 
     core.info(`base directory files`)
-    fs.readdir(baseDir, { withFileTypes: true })
+    await fs.readdir(baseDir, { withFileTypes: true })
       .then(files => {
         for (const file of files) {
           core.info(`Base Directory: Checking ${file.name}`)
@@ -135,7 +135,7 @@ async function run(): Promise<void> {
       })
 
     core.info(`shared directory files`)
-    fs.readdir(sharedDir, { withFileTypes: true })
+    await fs.readdir(sharedDir, { withFileTypes: true })
       .then(files => {
         for (const file of files) {
           core.info(`Shared Directory: Checking ${file.name}`)
@@ -149,7 +149,7 @@ async function run(): Promise<void> {
     const sync = YAML.parse(syncYmlContent)
 
 
-    core.info(sync.group.repos.toString())
+    core.info(sync.group.repos)
 
     // const updatedReadme = syncYmlContent.replace(
     //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
