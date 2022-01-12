@@ -34,13 +34,11 @@ async function run(): Promise<void> {
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
     const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
+    const sharedRepo = 'https://github.com/devnw/shared'
     const syncYmlPath = path.join(
       baseDir,
       core.getInput('syncFile') || 'sync.yml'
     )
-    const syncYmlContent = await fs.readFile(syncYmlPath, {
-      encoding: 'utf-8'
-    })
 
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token, {
@@ -106,6 +104,15 @@ async function run(): Promise<void> {
 
     const output = `${reposProducedByThis.join('\n* ')}`
 
+
+    const git = simpleGit(baseDir)
+
+    git.clone(sharedRepo, 'shared')
+
+    const syncYmlContent = await fs.readFile(syncYmlPath, {
+      encoding: 'utf-8'
+    })
+
     const sync = YAML.parse(syncYmlContent)
 
 
@@ -120,7 +127,6 @@ async function run(): Promise<void> {
 
     if (syncYmlContent !== sync.toString()) {
       core.info('Changes found, committing')
-      const git = simpleGit(baseDir)
       await git.addConfig('user.email', authorEmail)
       await git.addConfig('user.name', authorName)
       await git.add(syncYmlPath)

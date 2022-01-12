@@ -50,10 +50,8 @@ function run() {
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
+            const sharedRepo = 'https://github.com/devnw/shared';
             const syncYmlPath = path_1.default.join(baseDir, core.getInput('syncFile') || 'sync.yml');
-            const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
-                encoding: 'utf-8'
-            });
             const token = core.getInput('token');
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
@@ -103,6 +101,11 @@ function run() {
                 d.templateRepository.owner.login === org)
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
             const output = `${reposProducedByThis.join('\n* ')}`;
+            const git = promise_1.default(baseDir);
+            git.clone(sharedRepo, 'shared');
+            const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
+                encoding: 'utf-8'
+            });
             const sync = yaml_1.default.parse(syncYmlContent);
             core.info(sync.group.repos.toString());
             // const updatedReadme = syncYmlContent.replace(
@@ -112,7 +115,6 @@ function run() {
             yield fs_1.promises.writeFile(syncYmlPath, sync.toString());
             if (syncYmlContent !== sync.toString()) {
                 core.info('Changes found, committing');
-                const git = promise_1.default(baseDir);
                 yield git.addConfig('user.email', authorEmail);
                 yield git.addConfig('user.name', authorName);
                 yield git.add(syncYmlPath);
