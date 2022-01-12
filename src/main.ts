@@ -110,7 +110,7 @@ async function run(): Promise<void> {
     const output = `${reposProducedByThis.join('\n* ')}`
 
 
-    const git = simpleGit(baseDir)
+    const git = simpleGit()
 
     git.clone(sharedRepo, sharedDir)
 

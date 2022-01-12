@@ -102,7 +102,7 @@ function run() {
                 d.templateRepository.owner.login === org)
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
             const output = `${reposProducedByThis.join('\n* ')}`;
-            const git = promise_1.default(baseDir);
+            const git = promise_1.default();
             git.clone(sharedRepo, sharedDir);
             const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
                 encoding: 'utf-8'
