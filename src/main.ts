@@ -37,6 +37,7 @@ async function run(): Promise<void> {
     const sharedRepo = 'https://github.com/devnw/shared'
     const syncYmlPath = path.join(
       baseDir,
+      "shared",
       core.getInput('syncFile') || 'sync.yml'
     )
 
