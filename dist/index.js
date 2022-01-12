@@ -51,7 +51,7 @@ function run() {
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const sharedRepo = 'https://github.com/devnw/shared';
-            const syncYmlPath = path_1.default.join(baseDir, core.getInput('syncFile') || 'sync.yml');
+            const syncYmlPath = path_1.default.join(baseDir, "shared", core.getInput('syncFile') || 'sync.yml');
             const token = core.getInput('token');
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
