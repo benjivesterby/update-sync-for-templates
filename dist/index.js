@@ -51,9 +51,8 @@ function run() {
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const sharedRepo = 'https://github.com/devnw/shared';
-            const syncYmlPath = path_1.default.join(
-            // baseDir,
-            "./shared", core.getInput('syncFile') || 'sync.yml');
+            const sharedDir = path_1.default.join(baseDir, "shared");
+            const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
             const token = core.getInput('token');
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
@@ -104,7 +103,7 @@ function run() {
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
             const output = `${reposProducedByThis.join('\n* ')}`;
             const git = promise_1.default(baseDir);
-            git.clone(sharedRepo, 'shared');
+            git.clone(sharedRepo, sharedDir);
             const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
                 encoding: 'utf-8'
             });

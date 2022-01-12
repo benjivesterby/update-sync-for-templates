@@ -35,10 +35,14 @@ async function run(): Promise<void> {
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
     const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
     const sharedRepo = 'https://github.com/devnw/shared'
+    const sharedDir = path.join(
+      baseDir,
+      "shared",
+    )
+
     const syncYmlPath = path.join(
-      // baseDir,
-      "./shared",
-      core.getInput('syncFile') || 'sync.yml'
+      sharedDir,
+      core.getInput('syncFile') || 'sync.yml',
     )
 
     const token: string = core.getInput('token')
@@ -108,7 +112,7 @@ async function run(): Promise<void> {
 
     const git = simpleGit(baseDir)
 
-    git.clone(sharedRepo, 'shared')
+    git.clone(sharedRepo, sharedDir)
 
     const syncYmlContent = await fs.readFile(syncYmlPath, {
       encoding: 'utf-8'
