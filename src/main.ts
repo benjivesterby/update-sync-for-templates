@@ -146,10 +146,10 @@ async function run(): Promise<void> {
       encoding: 'utf-8'
     })
 
-    const sync = YAML.parse(syncYmlContent)
+    const sync = await YAML.parse(syncYmlContent)
 
 
-    core.info(sync.group.repos)
+    core.info(sync)
 
     // const updatedReadme = syncYmlContent.replace(
     //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
