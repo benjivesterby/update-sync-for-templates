@@ -52,6 +52,10 @@ function run() {
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const sharedRepo = 'https://github.com/devnw/shared.git';
             const sharedDir = path_1.default.join(baseDir, "shared");
+            core.info(`Base Directory: ${baseDir}\n
+       Shared Repo: ${sharedRepo}\n
+       Shared Directory: ${sharedDir}\n
+      `);
             const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
             const token = core.getInput('token');
             const octokit = github.getOctokit(token, {
@@ -66,26 +70,26 @@ function run() {
             do {
                 const result = yield octokit.graphql(`
         query orgRepos($owner: String!, $afterCursor: String) {
-          repositoryOwner(login: $owner) {
-            repositories(first: 100, after:$afterCursor, orderBy:{field:CREATED_AT, direction:DESC}) {
+      repositoryOwner(login: $owner) {
+        repositories(first: 100, after: $afterCursor, orderBy: { field: CREATED_AT, direction: DESC }) {
               pageInfo {
-                hasNextPage
-                endCursor
-              }
+            hasNextPage
+            endCursor
+          }
               nodes {
-                name
-                nameWithOwner
-                url
+            name
+            nameWithOwner
+            url
                 templateRepository {
-                  name
+              name
                   owner {
-                    login
-                  }
-                }
+                login
               }
             }
           }
         }
+      }
+    }
       `, {
                     owner: org,
                     afterCursor: nextPageCursor
@@ -95,15 +99,21 @@ function run() {
                     : undefined;
                 items = items.concat(result.repositoryOwner.repositories.nodes);
             } while (nextPageCursor !== undefined);
-            core.info(`Checking ${items.length} repositories for repositories from ${repoName}`);
+            core.info(`Checking ${items.length} repositories for repositories from ${repoName} `);
             const reposProducedByThis = items
                 .filter(d => d.templateRepository &&
                 d.templateRepository.name === repoName &&
                 d.templateRepository.owner.login === org)
                 .map(d => `[${d.nameWithOwner}](${d.url})`);
-            const output = `${reposProducedByThis.join('\n* ')}`;
+            const output = `${reposProducedByThis.join('\n* ')} `;
             const git = promise_1.default();
             git.clone(sharedRepo, sharedDir);
+            fs_1.promises.readdir(sharedDir, { withFileTypes: true })
+                .then(files => {
+                for (const file of files) {
+                    core.info(`Checking ${file.name}`);
+                }
+            });
             const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
                 encoding: 'utf-8'
             });
@@ -111,7 +121,7 @@ function run() {
             core.info(sync.group.repos.toString());
             // const updatedReadme = syncYmlContent.replace(
             //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
-            //   `<!-- TEMPLATE_LIST_START -->\n${output}\n<!-- TEMPLATE_LIST_END -->`
+            //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `
             // )
             yield fs_1.promises.writeFile(syncYmlPath, sync.toString());
             if (syncYmlContent !== sync.toString()) {

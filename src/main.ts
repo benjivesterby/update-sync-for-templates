@@ -40,6 +40,13 @@ async function run(): Promise<void> {
       "shared",
     )
 
+    core.info(
+      `Base Directory: ${baseDir}\n
+       Shared Repo: ${sharedRepo}\n
+       Shared Directory: ${sharedDir}\n
+      `
+    )
+
     const syncYmlPath = path.join(
       sharedDir,
       core.getInput('syncFile') || 'sync.yml',
@@ -61,26 +68,26 @@ async function run(): Promise<void> {
       const result: Response = await octokit.graphql(
         `
         query orgRepos($owner: String!, $afterCursor: String) {
-          repositoryOwner(login: $owner) {
-            repositories(first: 100, after:$afterCursor, orderBy:{field:CREATED_AT, direction:DESC}) {
+      repositoryOwner(login: $owner) {
+        repositories(first: 100, after: $afterCursor, orderBy: { field: CREATED_AT, direction: DESC }) {
               pageInfo {
-                hasNextPage
-                endCursor
-              }
+            hasNextPage
+            endCursor
+          }
               nodes {
-                name
-                nameWithOwner
-                url
+            name
+            nameWithOwner
+            url
                 templateRepository {
-                  name
+              name
                   owner {
-                    login
-                  }
-                }
+                login
               }
             }
           }
         }
+      }
+    }
       `,
         {
           owner: org,
@@ -95,7 +102,7 @@ async function run(): Promise<void> {
     } while (nextPageCursor !== undefined)
 
     core.info(
-      `Checking ${items.length} repositories for repositories from ${repoName}`
+      `Checking ${items.length} repositories for repositories from ${repoName} `
     )
 
     const reposProducedByThis = items
@@ -107,12 +114,19 @@ async function run(): Promise<void> {
       )
       .map(d => `[${d.nameWithOwner}](${d.url})`)
 
-    const output = `${reposProducedByThis.join('\n* ')}`
+    const output = `${reposProducedByThis.join('\n* ')} `
 
 
     const git = simpleGit()
 
     git.clone(sharedRepo, sharedDir)
+
+    fs.readdir(sharedDir, { withFileTypes: true })
+      .then(files => {
+        for (const file of files) {
+          core.info(`Checking ${file.name}`)
+        }
+      })
 
     const syncYmlContent = await fs.readFile(syncYmlPath, {
       encoding: 'utf-8'
@@ -125,7 +139,7 @@ async function run(): Promise<void> {
 
     // const updatedReadme = syncYmlContent.replace(
     //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
-    //   `<!-- TEMPLATE_LIST_START -->\n${output}\n<!-- TEMPLATE_LIST_END -->`
+    //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `
     // )
 
     await fs.writeFile(syncYmlPath, sync.toString())
