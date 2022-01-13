@@ -59,7 +59,7 @@ async function run(): Promise<void> {
     const templateRepo = core.getInput('templateRepo') || ''
     if (templateRepo !== repo.repo) {
       core.info(
-        `This is not the configured template repository. Skipping.`
+        `This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`
       )
       return
     }

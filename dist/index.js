@@ -59,7 +59,7 @@ function run() {
             // Ensure this is only running on the configured template repository
             const templateRepo = core.getInput('templateRepo') || '';
             if (templateRepo !== repo.repo) {
-                core.info(`This is not the configured template repository. Skipping.`);
+                core.info(`This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`);
                 return;
             }
             // Configured organization or the owner of the repository
