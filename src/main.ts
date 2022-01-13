@@ -199,6 +199,7 @@ async function run(): Promise<void> {
 
     if (syncYmlContent !== YAML.stringify(sync)) {
       core.info('Changes found, committing')
+      const git = simpleGit(sharedDir)
       await git.addConfig('user.email', authorEmail)
       await git.addConfig('user.name', authorName)
       await git.add(syncYmlPath)

@@ -158,6 +158,7 @@ function run() {
             yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
             if (syncYmlContent !== yaml_1.default.stringify(sync)) {
                 core.info('Changes found, committing');
+                const git = promise_1.default(sharedDir);
                 yield git.addConfig('user.email', authorEmail);
                 yield git.addConfig('user.name', authorName);
                 yield git.add(syncYmlPath);
