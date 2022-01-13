@@ -47,26 +47,36 @@ const yaml_1 = __importDefault(__nccwpck_require__(3552));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
-            const authorName = core.getInput('author_name') || 'Benji Vesterby';
-            const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
+            /***************************************/
+            /*           CONFIGURATION             */
+            /***************************************/
+            // Github Personal Access Token
             const token = core.getInput('token');
-            const user = core.getInput('user') || `benjivesterby`;
-            const repository = `github.com/contrast-security-inc/go-shared.git`; // core.getInput('repo') || 
-            const sharedRepo = `https://${user}:${token}@${repository}`;
-            const sharedDir = path_1.default.join(baseDir, "shared");
-            core.info(`Base Directory: ${baseDir}\n
-       Shared Repo: ${repository}\n
-       Shared Directory: ${sharedDir}\n
-      `);
-            const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
             });
             const { repo } = github.context;
+            // Configured organization or the owner of the repository
             const org = core.getInput('org') || repo.owner;
+            // Configured repository name or the name of the current repository
             const repoName = core.getInput('repo') || repo.repo;
             // const signingKey = core.getInput('signingKey') || ''
+            const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
+            const sharedDir = path_1.default.join(baseDir, "shared");
+            const syncRepo = core.getInput('syncRepo');
+            const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
+            // GIT Configuration Settings
+            const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
+            const authorName = core.getInput('author_name') || repo.owner;
+            const user = core.getInput('user') || `benjivesterby`;
+            const repository = core.getInput('repo') || '';
+            // Setup repository path for shared repository
+            const sharedRepo = `https://${user}:${token}@${repository}`;
+            /***************************************/
+            /*             QUERY GITHUB            */
+            /***************************************/
+            // Query the Github API for all repositories that were
+            // created with this template
             let items = [];
             let nextPageCursor = null;
             do {
@@ -106,71 +116,51 @@ function run() {
                 .filter(d => d.templateRepository &&
                 d.templateRepository.name === repoName &&
                 d.templateRepository.owner.login === org)
-                .map(d => `[${d.nameWithOwner}](${d.url})`);
-            const output = `${reposProducedByThis.join('\n* ')} `;
-            const git = promise_1.default(baseDir);
-            try {
-                yield git.clone(sharedRepo, sharedDir);
-            }
-            catch (error) {
-                core.setFailed(error.message);
-            }
-            core.info(`base directory files`);
-            yield fs_1.promises.readdir(baseDir, { withFileTypes: true })
-                .then(files => {
-                for (const file of files) {
-                    core.info(`Base Directory: Checking ${file.name}`);
+                .map(d => `${d.nameWithOwner}`);
+            if (reposProducedByThis.length > 0) {
+                const git = promise_1.default(baseDir);
+                try {
+                    yield git.clone(sharedRepo, sharedDir);
                 }
-            });
-            core.info(`shared directory files`);
-            yield fs_1.promises.readdir(sharedDir, { withFileTypes: true })
-                .then(files => {
-                for (const file of files) {
-                    core.info(`Shared Directory: Checking ${file.name}`);
+                catch (error) {
+                    core.setFailed(error.message);
                 }
-            });
-            const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
-                encoding: 'utf-8'
-            });
-            const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
-            // core.info(sync.contents || 'no contents')
-            // await core.info(JSON.stringify(sync) || 'no contents')
-            // let item: GPE | undefined
-            const toAdd = "Contrast-Security-Inc/net";
-            for (let item in sync.group) {
-                if (sync.group[item].id === "default") {
-                    if (!sync.group[item].repos.includes(toAdd)) {
-                        core.info(`Updating ${sync.group[item].id} and adding ${toAdd}`);
-                        sync.group[item].repos += `${toAdd}\n`;
-                    }
-                }
-            }
-            core.info(`Edited ${JSON.stringify(sync)}`);
-            core.info(`Edited As YAML: ${yaml_1.default.stringify(sync)}`);
-            // const newSync = YAML.parseDocument(JSON.stringify(sync))
-            // await sync((grp: any) => {
-            //   core.info(`${grp.repos}`)
-            // });
-            // const updatedReadme = syncYmlContent.replace(
-            //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
-            //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `
-            // )
-            yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
-            if (syncYmlContent !== yaml_1.default.stringify(sync)) {
-                core.info('Changes found, committing');
-                const git = promise_1.default(sharedDir);
-                yield git.addConfig('user.email', authorEmail);
-                yield git.addConfig('user.name', authorName);
-                yield git.add(syncYmlPath);
-                yield git.commit(`docs: 📝 Updating template usage list`, undefined, {
-                    '--author': `"${authorName} <${authorEmail}>"`
+                // Load the configured sync file
+                const syncYmlContent = yield fs_1.promises.readFile(syncYmlPath, {
+                    encoding: 'utf-8'
                 });
-                yield git.push();
-                const log = yield git.log();
-                core.info(`Committed ${JSON.stringify(log)}`);
-            }
-            else {
-                core.info('No changes, skipping');
+                // Parse the YAML into JSON
+                const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
+                reposProducedByThis.forEach(repo => {
+                    core.info(`Updating template ${repoName} configs and adding ${repo}`);
+                    // Iterate through the configurations and update the repositories list for
+                    // each configuration for this template
+                    let entries = 0;
+                    for (let item in sync.group) {
+                        if (sync.group[item].templates.includes(repoName)) {
+                            if (!sync.group[item].repos.includes(repo)) {
+                                entries++;
+                                sync.group[item].repos += `${repo}\n`;
+                            }
+                        }
+                    }
+                    core.info(`Updated ${entries} configs for template ${repoName}`);
+                });
+                yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
+                if (syncYmlContent !== yaml_1.default.stringify(sync)) {
+                    core.info('Changes found, committing');
+                    const git = promise_1.default(sharedDir);
+                    yield git.addConfig('user.email', authorEmail);
+                    yield git.addConfig('user.name', authorName);
+                    yield git.add(syncYmlPath);
+                    yield git.commit(`new-repo: 🥷🏽 Updating list of repos to sync for template [${repoName}]`, undefined, {
+                        '--author': `"${authorName} <${authorEmail}>"`
+                    });
+                    yield git.push();
+                }
+                else {
+                    core.info('No changes, skipping');
+                }
             }
         }
         catch (error) {
