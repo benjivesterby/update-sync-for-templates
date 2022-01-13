@@ -165,10 +165,10 @@ async function run(): Promise<void> {
     // core.info(sync.contents || 'no contents')
     // await core.info(JSON.stringify(sync) || 'no contents')
 
-    let item: any
+    // let item: GPE | undefined
 
-    for (item in sync.group) {
-      core.info(`Checking ${item.repos}`)
+    for (let item in sync.group) {
+      core.info(`Checking ${JSON.stringify(item)}`)
     }
 
     // await sync((grp: any) => {
