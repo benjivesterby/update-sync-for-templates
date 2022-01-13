@@ -34,7 +34,7 @@ interface Group {
 
 interface GPE {
   files: File[],
-  templates: string[]
+  templates: string
   repos: string
 }
 interface File {
