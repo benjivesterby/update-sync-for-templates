@@ -52,7 +52,7 @@ function run() {
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const token = core.getInput('token');
             const user = core.getInput('user') || `benjivesterby`;
-            const repository = core.getInput('repo') || `github.com/contrast-security-inc/go-shared.git`;
+            const repository = `github.com/contrast-security-inc/go-shared.git`; // core.getInput('repo') || 
             const sharedRepo = `https://${user}:${token}@${repository}`;
             const sharedDir = path_1.default.join(baseDir, "shared");
             core.info(`Base Directory: ${baseDir}\n

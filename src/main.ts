@@ -51,7 +51,7 @@ async function run(): Promise<void> {
 
     const token: string = core.getInput('token')
     const user: string = core.getInput('user') || `benjivesterby`
-    const repository: string = core.getInput('repo') || `github.com/contrast-security-inc/go-shared.git`
+    const repository: string = `github.com/contrast-security-inc/go-shared.git` // core.getInput('repo') || 
 
     const sharedRepo = `https://${user}:${token}@${repository}`
     const sharedDir = path.join(
