@@ -55,15 +55,24 @@ async function run(): Promise<void> {
     })
     const { repo } = github.context
 
+    // Ensure this is only running on the configured template repository
+    const templateRepo = core.getInput('templateRepo') || ''
+    if (templateRepo !== repo.repo) {
+      core.info(
+        `This is not the configured template repository. Skipping.`
+      )
+      return
+    }
+
     // Configured organization or the owner of the repository
     const org = core.getInput('org') || repo.owner
 
     // Configured repository name or the name of the current repository
-    const repoName = core.getInput('repo') || repo.repo
+    const syncRepo = core.getInput('syncRepo')
 
     // const signingKey = core.getInput('signingKey') || ''
 
-    const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
+    const baseDir = path.join(process.cwd() || '')
 
     const sharedDir = path.join(
       baseDir,
@@ -132,20 +141,22 @@ async function run(): Promise<void> {
     } while (nextPageCursor !== undefined)
 
     core.info(
-      `Checking ${items.length} repositories for repositories from ${repoName} `
+      `Checking ${items.length} repositories for repositories from ${org} `
     )
 
     const reposProducedByThis = items
       .filter(
         d =>
           d.templateRepository &&
-          d.templateRepository.name === repoName &&
+          d.templateRepository.name === repo.repo &&
           d.templateRepository.owner.login === org
       )
       .map(d => `${d.nameWithOwner}`)
 
 
     if (reposProducedByThis.length > 0) {
+      core.info(`Found ${reposProducedByThis.length} repositories which match template ${repo.repo}`)
+
       const git = simpleGit(baseDir)
 
       try {
@@ -164,13 +175,13 @@ async function run(): Promise<void> {
       const sync: Group = await YAML.parseDocument(syncYmlContent).toJSON()
 
       reposProducedByThis.forEach(repo => {
-        core.info(`Updating template ${repoName} configs and adding ${repo}`)
+        core.info(`Updating template ${syncRepo} configs and adding ${repo}`)
 
         // Iterate through the configurations and update the repositories list for
         // each configuration for this template
         let entries = 0
         for (let item in sync.group) {
-          if (sync.group[item].templates.includes(repoName)) {
+          if (sync.group[item].templates.includes(syncRepo)) {
             if (!sync.group[item].repos.includes(repo)) {
               entries++
               sync.group[item].repos += `${repo}\n`
@@ -178,7 +189,7 @@ async function run(): Promise<void> {
           }
         }
 
-        core.info(`Updated ${entries} configs for template ${repoName}`)
+        core.info(`Updated ${entries} configs for template ${syncRepo}`)
       });
 
       await fs.writeFile(syncYmlPath, YAML.stringify(sync))
@@ -189,7 +200,7 @@ async function run(): Promise<void> {
         await git.addConfig('user.email', authorEmail)
         await git.addConfig('user.name', authorName)
         await git.add(syncYmlPath)
-        await git.commit(`new-repo: 🥷🏽 Updating list of repos to sync for template [${repoName}]`, undefined, {
+        await git.commit(`new-repo: 🥷🏽 Updating list of repos to sync for template [${syncRepo}]`, undefined, {
           '--author': `"${authorName} <${authorEmail}>"`
         })
         await git.push()

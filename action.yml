@@ -5,25 +5,24 @@ inputs:
   token:
     required: true
     description: 'A personal access token that can access your org repos, see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token for more.'
-  repo:
+  template_repo:
+    required: true
+    description: 'The template repository that this action is checking for usage of'
+  sync_repo:
     required: true
     description: 'The repository where the sync file is located'
-  org:
-    required: false
-    description: 'A way to override the org the action is checks for usage of the template'
   sync_file:
     required: false
     description: 'The path to the sync.yml to update'
+  org:
+    required: false
+    description: 'A way to override the org the action is checks for usage of the template'
   author_name:
     required: false
     description: 'The name of the user that will be displayed as the author of the commit'
   author_email:
     required: false
     description: 'The email of the user that will be displayed as the author of the commit'
-  cwd:
-    required: false
-    description: 'The directory where your repository is located. You should use actions/checkout first to set it up'
-    default: '.'
   # siging_key:
   #   required: false
   #   description: 'The signing key to be used for signing commits'
