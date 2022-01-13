@@ -132,7 +132,7 @@ function run() {
             });
             const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
             // core.info(sync.contents || 'no contents')
-            yield core.info(sync.files[0] || 'no contents');
+            yield core.info(JSON.stringify(sync) || 'no contents');
             // const updatedReadme = syncYmlContent.replace(
             //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
             //   `< !--TEMPLATE_LIST_START -->\n${ output } \n < !--TEMPLATE_LIST_END --> `

@@ -150,7 +150,7 @@ async function run(): Promise<void> {
 
 
     // core.info(sync.contents || 'no contents')
-    await core.info(sync.files[0] || 'no contents')
+    await core.info(JSON.stringify(sync) || 'no contents')
 
 
     // const updatedReadme = syncYmlContent.replace(
