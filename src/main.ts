@@ -148,7 +148,7 @@ async function run(): Promise<void> {
 
     const sync = await YAML.parse(syncYmlContent)
 
-    core.info(sync.contents || 'no contents')
+    core.info(YAML.stringify(sync.group) || 'no contents')
     await core.info(sync.toJSON() || 'no contents')
 
 
