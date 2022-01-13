@@ -1,8 +1,8 @@
 {
-  "name": "template-repository-usage-action",
+  "name": "update-sync-on-template-use",
   "version": "1.0.0",
   "private": true,
-  "description": "A GitHub action to automatically update a template repository README with a list of repos that used it in an organisation.",
+  "description": "An action for updating the sync.yaml file from BetaHuhn/repo-file-sync-action on template use.",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -16,14 +16,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maael/template-repository-usage-action.git"
+    "url": "git+https://github.com/benjivesterby/update-sync-on-template-use.git"
   },
   "keywords": [
     "actions",
     "node",
-    "setup"
+    "setup",
+    "template",
+    "sync",
+    "file-sync",
+    "repo-file-sync"
   ],
-  "author": "Matthew Elphick <matt.a.elphy@gmail.com>",
+  "author": "Benji Vesterby",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.3.0",

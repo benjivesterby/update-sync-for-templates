@@ -68,7 +68,7 @@ function run() {
             const syncRepo = core.getInput('sync_repo');
             // const signingKey = core.getInput('signingKey') || ''
             const baseDir = path_1.default.join(process.cwd() || '');
-            const sharedDir = path_1.default.join(baseDir, "shared");
+            const sharedDir = path_1.default.join(baseDir, 'shared');
             const syncYmlPath = path_1.default.join(sharedDir, core.getInput('sync_file') || 'sync.yml');
             // GIT Configuration Settings
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
@@ -136,29 +136,38 @@ function run() {
                 });
                 // Parse the YAML into JSON
                 const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
+                let entries = 0;
+                // Go through repositories and check if they exist in the sync file
                 reposProducedByThis.forEach(repo => {
-                    core.info(`Updating template ${syncRepo} configs and adding ${repo}`);
                     // Iterate through the configurations and update the repositories list for
                     // each configuration for this template
-                    let entries = 0;
                     for (let item in sync.group) {
-                        if (sync.group[item].templates.includes(templateRepo)) {
+                        // Check for template configs and if the repo is in the list
+                        if (sync.group[item].templates &&
+                            sync.group[item].templates.includes(templateRepo)) {
+                            // Check if the current repo is in the list already
+                            // TODO: This only does a string compare, should be a regex, or something
                             if (!sync.group[item].repos.includes(repo)) {
+                                core.info(`Updating [${syncRepo}] sync file; adding [${repo}]`);
                                 entries++;
                                 sync.group[item].repos += `${repo}\n`;
                             }
                         }
                     }
-                    core.info(`Updated ${entries} configs for template ${syncRepo}`);
                 });
+                core.info(`Updated [${entries}] configs for template ${templateRepo}`);
+                // Write out to the sync file
                 yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
+                // Push the sync file to the shared repository
                 if (syncYmlContent !== yaml_1.default.stringify(sync)) {
                     core.info('Changes found, committing');
+                    // Git obj in shared directory
                     const git = promise_1.default(sharedDir);
                     yield git.addConfig('user.email', authorEmail);
                     yield git.addConfig('user.name', authorName);
                     yield git.add(syncYmlPath);
-                    yield git.commit(`new-repo: 🥷🏽 Updating list of repos to sync for template [${syncRepo}]`, undefined, {
+                    const msg = `new-repo: 🥷🏽 Updating list of repos to sync for template [${templateRepo}]`;
+                    yield git.commit(msg, undefined, {
                         '--author': `"${authorName} <${authorEmail}>"`
                     });
                     yield git.push();

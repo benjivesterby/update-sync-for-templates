@@ -1,5 +1,5 @@
 name: 'Template Repository Use - Update Shared Sync'
-description: 'A GitHub action to automatically update the sync.yml file of a shared file repository.'
+description: 'An action for updating the sync.yaml file from BetaHuhn/repo-file-sync-action on template use.'
 author: 'Benji Vesterby'
 inputs:
   token:

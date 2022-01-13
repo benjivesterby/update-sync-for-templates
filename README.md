@@ -21,15 +21,15 @@ Removing the `EXAMPLE_` prefix, done here so the example below doesn't match the
 
 ### Options
 
-| Option         | Required | Description                                                                                                                                                                        |
-| -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `token`        | ✅       | A personal access token that can access your organisation repos, see [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) for more. |
-| `org`          | ❌       | A way to override the organisation the action is checking for usage of the template, otherwise it uses the org that owns the repo where the action is running.                     |
-| `repo`         | ❌       | A way to override the repo the action is checking for usage of in the given org, otherwise it uses the repo where the action is running.                                           |
-| `readme_path`  | ❌       | The path to the README to update.                                                                                                                                                  |
-| `author_name`  | ❌       | The name of the user that will be displayed as the author of the commit.                                                                                                           |
-| `author_email` | ❌       | The email of the user that will be displayed as the author of the commit.                                                                                                          |
-| `cwd`          | ❌       | The directory where your repository is located. You should use actions/checkout first to set it up.                                                                                |
+| Option          | Required | Description                                                                                                                                                                                                           |
+| --------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `token`         | ✅        | Personal access token which has permissions to both the configured `template_repo` and `sync_repo`, see [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token) for more. |
+| `template_repo` | ✅        | The template repo that this action should search for usages of                                                                                                                                                        |
+| `sync_repo`     | ✅        | The sync repo which maintains the BetaHuhn/repo-file-sync-action sync configuration file                                                                                                                              |
+| `sync_file`     | ❌        | The sync yaml file (default: `sync.yml`)                                                                                                                                                                              |
+| `org`           | ❌        | Org override for template search (default: template organization)                                                                                                                                                     |
+| `author_name`   | ❌        | The name of the user that will be displayed as the author of the commit.                                                                                                                                              |
+| `author_email`  | ❌        | The email of the user that will be displayed as the author of the commit.                                                                                                                                             |
 
 ## Code in Main
 
@@ -91,17 +91,4 @@ See the [actions tab](https://github.com/actions/typescript-action/actions) for 
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
 
-## Example:
-
-<!-- TEMPLATE_LIST_START -->
-# 8 Repositories using graphql-monorepo-template
-
-* [ThreadsStyling/microservices](https://github.com/ThreadsStyling/microservices)
-* [ThreadsStyling/parcels-graph-api](https://github.com/ThreadsStyling/parcels-graph-api)
-* [ThreadsStyling/notifications-service](https://github.com/ThreadsStyling/notifications-service)
-* [ThreadsStyling/inbound-link-resolver](https://github.com/ThreadsStyling/inbound-link-resolver)
-* [ThreadsStyling/chat-assignment-api](https://github.com/ThreadsStyling/chat-assignment-api)
-* [ThreadsStyling/graphql.threads.team](https://github.com/ThreadsStyling/graphql.threads.team)
-* [ThreadsStyling/sales-ops-api](https://github.com/ThreadsStyling/sales-ops-api)
-* [ThreadsStyling/product-catalogue-api](https://github.com/ThreadsStyling/product-catalogue-api)
-<!-- TEMPLATE_LIST_END -->
+This is a hard fork of [original work](https://github.com/maael/template-repository-usage-action) done by Matthew Elphick <matt.a.elphy@gmail.com>

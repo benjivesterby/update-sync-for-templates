@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import {promises as fs} from 'fs'
 import path from 'path'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
@@ -28,12 +28,13 @@ interface Item {
   }
 }
 
+// YAML Structure
 interface Group {
   group: GPE[]
 }
 
 interface GPE {
-  files: File[],
+  files: File[]
   templates: string
   repos: string
 }
@@ -53,7 +54,7 @@ async function run(): Promise<void> {
     const octokit = github.getOctokit(token, {
       previews: ['baptiste']
     })
-    const { repo } = github.context
+    const {repo} = github.context
 
     // Ensure this is only running on the configured template repository
     const templateRepo = core.getInput('template_repo') || ''
@@ -74,19 +75,15 @@ async function run(): Promise<void> {
 
     const baseDir = path.join(process.cwd() || '')
 
-    const sharedDir = path.join(
-      baseDir,
-      "shared",
-    )
+    const sharedDir = path.join(baseDir, 'shared')
 
     const syncYmlPath = path.join(
       sharedDir,
-      core.getInput('sync_file') || 'sync.yml',
+      core.getInput('sync_file') || 'sync.yml'
     )
 
     // GIT Configuration Settings
-    const authorEmail =
-      core.getInput('author_email') || 'benji@devnw.com'
+    const authorEmail = core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || repo.owner
     const user: string = core.getInput('user') || `benjivesterby`
 
@@ -152,16 +149,16 @@ async function run(): Promise<void> {
       )
       .map(d => `${d.nameWithOwner}`)
 
-
     if (reposProducedByThis.length > 0) {
-      core.info(`Found ${reposProducedByThis.length} repositories which match template ${repo.repo}`)
+      core.info(
+        `Found ${reposProducedByThis.length} repositories which match template ${repo.repo}`
+      )
 
       const git = simpleGit(baseDir)
 
       try {
         await git.clone(sharedRepo, sharedDir)
-      }
-      catch (error: any) {
+      } catch (error: any) {
         core.setFailed(error.message)
       }
 
@@ -172,36 +169,50 @@ async function run(): Promise<void> {
 
       // Parse the YAML into JSON
       const sync: Group = await YAML.parseDocument(syncYmlContent).toJSON()
+      let entries = 0
 
+      // Go through repositories and check if they exist in the sync file
       reposProducedByThis.forEach(repo => {
-        core.info(`Updating template ${syncRepo} configs and adding ${repo}`)
-
         // Iterate through the configurations and update the repositories list for
         // each configuration for this template
-        let entries = 0
         for (let item in sync.group) {
-          if (sync.group[item].templates.includes(templateRepo)) {
+          // Check for template configs and if the repo is in the list
+          if (
+            sync.group[item].templates &&
+            sync.group[item].templates.includes(templateRepo)
+          ) {
+            // Check if the current repo is in the list already
+            // TODO: This only does a string compare, should be a regex, or something
             if (!sync.group[item].repos.includes(repo)) {
+              core.info(`Updating [${syncRepo}] sync file; adding [${repo}]`)
               entries++
               sync.group[item].repos += `${repo}\n`
             }
           }
         }
+      })
 
-        core.info(`Updated ${entries} configs for template ${syncRepo}`)
-      });
+      core.info(`Updated [${entries}] configs for template ${templateRepo}`)
 
+      // Write out to the sync file
       await fs.writeFile(syncYmlPath, YAML.stringify(sync))
 
+      // Push the sync file to the shared repository
       if (syncYmlContent !== YAML.stringify(sync)) {
         core.info('Changes found, committing')
+
+        // Git obj in shared directory
         const git = simpleGit(sharedDir)
+
         await git.addConfig('user.email', authorEmail)
         await git.addConfig('user.name', authorName)
         await git.add(syncYmlPath)
-        await git.commit(`new-repo: 🥷🏽 Updating list of repos to sync for template [${syncRepo}]`, undefined, {
+
+        const msg = `new-repo: 🥷🏽 Updating list of repos to sync for template [${templateRepo}]`
+        await git.commit(msg, undefined, {
           '--author': `"${authorName} <${authorEmail}>"`
         })
+
         await git.push()
       } else {
         core.info('No changes, skipping')
