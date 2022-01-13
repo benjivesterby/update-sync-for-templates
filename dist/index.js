@@ -166,7 +166,7 @@ function run() {
                 });
                 yield git.push();
                 const log = yield git.log();
-                core.info(`Committed ${log}`);
+                core.info(`Committed ${JSON.stringify(log)}`);
             }
             else {
                 core.info('No changes, skipping');

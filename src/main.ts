@@ -209,7 +209,7 @@ async function run(): Promise<void> {
 
       const log = await git.log()
 
-      core.info(`Committed ${log}`)
+      core.info(`Committed ${JSON.stringify(log)}`)
     } else {
       core.info('No changes, skipping')
     }
