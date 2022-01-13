@@ -180,7 +180,7 @@ async function run(): Promise<void> {
         // each configuration for this template
         let entries = 0
         for (let item in sync.group) {
-          if (sync.group[item].templates.includes(syncRepo)) {
+          if (sync.group[item].templates.includes(templateRepo)) {
             if (!sync.group[item].repos.includes(repo)) {
               entries++
               sync.group[item].repos += `${repo}\n`
