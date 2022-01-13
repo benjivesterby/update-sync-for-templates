@@ -10,7 +10,7 @@ inputs:
     description: 'The template repository that this action is checking for usage of'
   sync_repo:
     required: true
-    description: 'The repository where the sync file is located'
+    description: 'The org/repo name of the shared file repository that this action is checking for usage of (ex: devnw/shared)'
   sync_file:
     required: false
     description: 'The path to the sync.yml to update'

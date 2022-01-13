@@ -56,7 +56,7 @@ async function run(): Promise<void> {
     const { repo } = github.context
 
     // Ensure this is only running on the configured template repository
-    const templateRepo = core.getInput('templateRepo') || ''
+    const templateRepo = core.getInput('template_repo') || ''
     if (templateRepo !== repo.repo) {
       core.info(
         `This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`
@@ -67,8 +67,8 @@ async function run(): Promise<void> {
     // Configured organization or the owner of the repository
     const org = core.getInput('org') || repo.owner
 
-    // Configured repository name or the name of the current repository
-    const syncRepo = core.getInput('syncRepo')
+    // The name of the sync repository including organization
+    const syncRepo = core.getInput('sync_repo')
 
     // const signingKey = core.getInput('signingKey') || ''
 
@@ -81,7 +81,7 @@ async function run(): Promise<void> {
 
     const syncYmlPath = path.join(
       sharedDir,
-      core.getInput('syncFile') || 'sync.yml',
+      core.getInput('sync_file') || 'sync.yml',
     )
 
     // GIT Configuration Settings
@@ -89,10 +89,9 @@ async function run(): Promise<void> {
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || repo.owner
     const user: string = core.getInput('user') || `benjivesterby`
-    const repository: string = core.getInput('repo') || ''
 
     // Setup repository path for shared repository
-    const sharedRepo = `https://${user}:${token}@${repository}`
+    const sharedRepo = `https://${user}:${token}@github.com/${syncRepo}`
 
     /***************************************/
     /*             QUERY GITHUB            */

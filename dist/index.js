@@ -57,26 +57,25 @@ function run() {
             });
             const { repo } = github.context;
             // Ensure this is only running on the configured template repository
-            const templateRepo = core.getInput('templateRepo') || '';
+            const templateRepo = core.getInput('template_repo') || '';
             if (templateRepo !== repo.repo) {
                 core.info(`This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`);
                 return;
             }
             // Configured organization or the owner of the repository
             const org = core.getInput('org') || repo.owner;
-            // Configured repository name or the name of the current repository
-            const syncRepo = core.getInput('syncRepo');
+            // The name of the sync repository including organization
+            const syncRepo = core.getInput('sync_repo');
             // const signingKey = core.getInput('signingKey') || ''
             const baseDir = path_1.default.join(process.cwd() || '');
             const sharedDir = path_1.default.join(baseDir, "shared");
-            const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
+            const syncYmlPath = path_1.default.join(sharedDir, core.getInput('sync_file') || 'sync.yml');
             // GIT Configuration Settings
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
             const authorName = core.getInput('author_name') || repo.owner;
             const user = core.getInput('user') || `benjivesterby`;
-            const repository = core.getInput('repo') || '';
             // Setup repository path for shared repository
-            const sharedRepo = `https://${user}:${token}@${repository}`;
+            const sharedRepo = `https://${user}:${token}@github.com/${syncRepo}`;
             /***************************************/
             /*             QUERY GITHUB            */
             /***************************************/
