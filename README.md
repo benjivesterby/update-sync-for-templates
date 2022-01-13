@@ -1,23 +1,17 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+# Update Sync Configuration for BetaHuhn/repo-file-sync-action
 
-# Template Repository Usage GitHub Action
+This action is used to update the sync configuration for the
+BetaHuhn/repo-file-sync-action action. Configuring this will allow for
+repositories created from a template to be auto-configured to be synced from the
+shared repository.
 
-A GitHub action to automatically update a template repository README with a list of repos that used it in an organisation.
+## Configuring the Action
 
-## How to use
-
-1. Specify somewhere in a README that you want the list, and add:
-
-```txt
-<!-- EXAMPLE_TEMPLATE_LIST_START -->
-<!-- EXAMPLE_TEMPLATE_LIST_END -->
-```
-
-Removing the `EXAMPLE_` prefix, done here so the example below doesn't match the text above.
-
-2. Add the GitHub action, and set it to run nightly
+1. Setup the BetaHuhn/repo-file-sync-action action in your GitHub organization.
+   1. Example here:
+      [https://github.com/devnw/shared](https://github.com/devnw/shared)
+1. Create a template repository and add the following file:
+   1. 
 
 ### Options
 
