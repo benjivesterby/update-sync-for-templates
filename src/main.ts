@@ -151,7 +151,7 @@ async function run(): Promise<void> {
     // core.info(sync.contents || 'no contents')
     // await core.info(JSON.stringify(sync) || 'no contents')
 
-    for (let item in sync) {
+    for (let item in sync.group) {
       core.info(`Checking ${item}`)
     }
 
