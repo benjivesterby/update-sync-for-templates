@@ -135,7 +135,10 @@ function run() {
             // await core.info(JSON.stringify(sync) || 'no contents')
             // let item: GPE | undefined
             for (let item in sync.group) {
-                core.info(`Checking ${JSON.stringify(sync.group[item])}`);
+                core.info(`Checking ${JSON.stringify(sync.group[item].repos)}`);
+                // if (sync.group[item].id === repoName) {
+                //   core.info(`Checking ${JSON.stringify(sync.group[item])}`)
+                // }
             }
             // await sync((grp: any) => {
             //   core.info(`${grp.repos}`)
