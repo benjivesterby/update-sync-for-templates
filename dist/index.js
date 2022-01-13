@@ -50,14 +50,16 @@ function run() {
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
-            const sharedRepo = 'https://github.com/contrast-security-inc/go-shared.git';
+            const token = core.getInput('token');
+            const user = core.getInput('user') || `benjivesterby`;
+            const repository = core.getInput('repo') || `github.com/contrast-security-inc/go-shared.git`;
+            const sharedRepo = `https://${user}:${token}@${repository}`;
             const sharedDir = path_1.default.join(baseDir, "shared");
             core.info(`Base Directory: ${baseDir}\n
-       Shared Repo: ${sharedRepo}\n
+       Shared Repo: ${repository}\n
        Shared Directory: ${sharedDir}\n
       `);
             const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
-            const token = core.getInput('token');
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
             });

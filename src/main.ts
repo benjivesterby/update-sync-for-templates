@@ -48,7 +48,12 @@ async function run(): Promise<void> {
       core.getInput('author_email') || 'benji@devnw.com'
     const authorName = core.getInput('author_name') || 'Benji Vesterby'
     const baseDir = path.join(process.cwd(), core.getInput('cwd') || '')
-    const sharedRepo = 'https://github.com/contrast-security-inc/go-shared.git'
+
+    const token: string = core.getInput('token')
+    const user: string = core.getInput('user') || `benjivesterby`
+    const repository: string = core.getInput('repo') || `github.com/contrast-security-inc/go-shared.git`
+
+    const sharedRepo = `https://${user}:${token}@${repository}`
     const sharedDir = path.join(
       baseDir,
       "shared",
@@ -56,7 +61,7 @@ async function run(): Promise<void> {
 
     core.info(
       `Base Directory: ${baseDir}\n
-       Shared Repo: ${sharedRepo}\n
+       Shared Repo: ${repository}\n
        Shared Directory: ${sharedDir}\n
       `
     )
@@ -66,7 +71,6 @@ async function run(): Promise<void> {
       core.getInput('syncFile') || 'sync.yml',
     )
 
-    const token: string = core.getInput('token')
     const octokit = github.getOctokit(token, {
       previews: ['baptiste']
     })
