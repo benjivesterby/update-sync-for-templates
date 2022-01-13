@@ -28,6 +28,20 @@ interface Item {
   }
 }
 
+interface Group {
+  group: GPE[]
+}
+
+interface GPE {
+  files: File[],
+  id: string
+  repos: string
+}
+interface File {
+  source: string
+  dest: string
+}
+
 async function run(): Promise<void> {
   try {
     const authorEmail =
@@ -146,13 +160,15 @@ async function run(): Promise<void> {
       encoding: 'utf-8'
     })
 
-    const sync = await YAML.parseDocument(syncYmlContent).toJSON()
+    const sync: Group = await YAML.parseDocument(syncYmlContent).toJSON()
 
     // core.info(sync.contents || 'no contents')
     // await core.info(JSON.stringify(sync) || 'no contents')
 
-    for (let item in sync.group) {
-      core.info(`Checking ${item}`)
+    let item: any
+
+    for (item in sync.group) {
+      core.info(`Checking ${item.repos}`)
     }
 
     // await sync((grp: any) => {

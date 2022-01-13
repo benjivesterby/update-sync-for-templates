@@ -133,8 +133,9 @@ function run() {
             const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
             // core.info(sync.contents || 'no contents')
             // await core.info(JSON.stringify(sync) || 'no contents')
-            for (let item in sync.group) {
-                core.info(`Checking ${item}`);
+            let item;
+            for (item in sync.group) {
+                core.info(`Checking ${item.repos}`);
             }
             // await sync((grp: any) => {
             //   core.info(`${grp.repos}`)
