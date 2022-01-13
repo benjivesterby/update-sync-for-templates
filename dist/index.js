@@ -50,7 +50,7 @@ function run() {
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
             const authorName = core.getInput('author_name') || 'Benji Vesterby';
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
-            const sharedRepo = 'https://github.com/devnw/shared.git';
+            const sharedRepo = 'https://github.com/contrast-security-inc/go-shared.git';
             const sharedDir = path_1.default.join(baseDir, "shared");
             core.info(`Base Directory: ${baseDir}\n
        Shared Repo: ${sharedRepo}\n
@@ -134,12 +134,16 @@ function run() {
             // core.info(sync.contents || 'no contents')
             // await core.info(JSON.stringify(sync) || 'no contents')
             // let item: GPE | undefined
+            const toAdd = "Contrast-Security-Inc/net";
             for (let item in sync.group) {
-                core.info(`Checking ${JSON.stringify(sync.group[item].repos)}`);
-                // if (sync.group[item].id === repoName) {
-                //   core.info(`Checking ${JSON.stringify(sync.group[item])}`)
-                // }
+                if (sync.group[item].id === "default") {
+                    if (!sync.group[item].repos.includes(toAdd)) {
+                        core.info(`Updating ${sync.group[item].id} and adding ${toAdd}`);
+                        sync.group[item].repos += `${toAdd}\n`;
+                    }
+                }
             }
+            core.info(`Edited ${JSON.stringify(sync)}`);
             // await sync((grp: any) => {
             //   core.info(`${grp.repos}`)
             // });
