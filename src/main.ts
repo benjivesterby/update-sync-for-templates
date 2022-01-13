@@ -148,10 +148,12 @@ async function run(): Promise<void> {
 
     const sync = await YAML.parseDocument(syncYmlContent).toJSON()
 
-
     // core.info(sync.contents || 'no contents')
-    await core.info(JSON.stringify(sync) || 'no contents')
+    // await core.info(JSON.stringify(sync) || 'no contents')
 
+    await sync.forEach((grp: any) => {
+      core.info(`${grp.repos}`)
+    });
 
     // const updatedReadme = syncYmlContent.replace(
     //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
