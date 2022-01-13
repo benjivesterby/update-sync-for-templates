@@ -5,16 +5,12 @@ inputs:
   token:
     required: true
     description: 'A personal access token that can access your org repos, see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token for more.'
+  repo:
+    required: true
+    description: 'The repository where the sync file is located'
   org:
     required: false
     description: 'A way to override the org the action is checks for usage of the template'
-  template_repo:
-    required: true
-    description: 'A way to override the repo the action is checking for usage of in the given org'
-  sync_repo:
-    required: true
-    description: `The repo which contains the sync.yml file to update.`
-    default: 'go-shared'
   sync_file:
     required: false
     description: 'The path to the sync.yml to update'

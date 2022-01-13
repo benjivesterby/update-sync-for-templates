@@ -70,8 +70,6 @@ async function run(): Promise<void> {
       "shared",
     )
 
-    const syncRepo = core.getInput('syncRepo')
-
     const syncYmlPath = path.join(
       sharedDir,
       core.getInput('syncFile') || 'sync.yml',

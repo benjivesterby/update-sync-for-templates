@@ -63,7 +63,6 @@ function run() {
             // const signingKey = core.getInput('signingKey') || ''
             const baseDir = path_1.default.join(process.cwd(), core.getInput('cwd') || '');
             const sharedDir = path_1.default.join(baseDir, "shared");
-            const syncRepo = core.getInput('syncRepo');
             const syncYmlPath = path_1.default.join(sharedDir, core.getInput('syncFile') || 'sync.yml');
             // GIT Configuration Settings
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
