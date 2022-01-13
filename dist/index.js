@@ -165,7 +165,8 @@ function run() {
                     '--author': `"${authorName} <${authorEmail}>"`
                 });
                 yield git.push();
-                core.info('Committed');
+                const log = yield git.log();
+                core.info(`Committed ${log}`);
             }
             else {
                 core.info('No changes, skipping');

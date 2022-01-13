@@ -206,7 +206,10 @@ async function run(): Promise<void> {
         '--author': `"${authorName} <${authorEmail}>"`
       })
       await git.push()
-      core.info('Committed')
+
+      const log = await git.log()
+
+      core.info(`Committed ${log}`)
     } else {
       core.info('No changes, skipping')
     }
