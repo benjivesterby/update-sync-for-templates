@@ -146,10 +146,11 @@ async function run(): Promise<void> {
       encoding: 'utf-8'
     })
 
-    const sync = await YAML.parse(syncYmlContent)
+    const sync = await YAML.parseDocument(syncYmlContent).toJSON()
 
-    core.info(YAML.stringify(sync.files) || 'no contents')
-    await core.info(sync.toJSON() || 'no contents')
+
+    // core.info(sync.contents || 'no contents')
+    await core.info(sync || 'no contents')
 
 
     // const updatedReadme = syncYmlContent.replace(
