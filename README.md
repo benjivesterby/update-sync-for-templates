@@ -1,17 +1,42 @@
 # Update Sync Configuration for BetaHuhn/repo-file-sync-action
 
 This action is used to update the sync configuration for the
-BetaHuhn/repo-file-sync-action action. Configuring this will allow for
-repositories created from a template to be auto-configured to be synced from the
-shared repository.
+[BetaHuhn/repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action)
+action. Configuring this will allow for repositories created from a template to
+be auto-configured to be synced from the shared repository.
 
 ## Configuring the Action
 
-1. Setup the BetaHuhn/repo-file-sync-action action in your GitHub organization.
+1. Setup the
+   [BetaHuhn/repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action)
+   action in your GitHub organization.
    1. Example here:
       [https://github.com/devnw/shared](https://github.com/devnw/shared)
-1. Create a template repository and add the following file:
-   1. 
+1. Create a template repository and add your workflow file (ex: `.github/workflows/sync_update.yml`)
+1. Configure your Action
+
+Example Configuration
+
+```yaml
+name: Template Sync
+
+on: [push, pull_request]
+
+jobs:
+  update-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.4.0
+      - name: Shared Template Sync Update 
+        uses: benjivesterby/update-sync-on-template-use@latest
+        with: 
+          token: "${{ secrets.GH_PAT }}" # Personal Access Token Is Required
+          org: "devnw"
+          template_repo: "oss-template"
+          sync_repo: "devnw/shared"
+          sync_file: "sync.yml"
+```
 
 ### Options
 
