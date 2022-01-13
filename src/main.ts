@@ -168,7 +168,7 @@ async function run(): Promise<void> {
     // let item: GPE | undefined
 
     for (let item in sync.group) {
-      core.info(`Checking ${JSON.stringify(item)}`)
+      core.info(`Checking ${JSON.stringify(sync.group[item])}`)
     }
 
     // await sync((grp: any) => {
