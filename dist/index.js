@@ -55,15 +55,15 @@ function run() {
             const octokit = github.getOctokit(token, {
                 previews: ['baptiste']
             });
-            const { repo } = github.context;
+            const { repo: gh } = github.context;
             // Ensure this is only running on the configured template repository
             const templateRepo = core.getInput('template_repo') || '';
-            if (templateRepo !== repo.repo) {
-                core.info(`This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`);
+            if (templateRepo !== gh.repo) {
+                core.info(`This repository [${gh.repo}] is not the configured template repository [${templateRepo}]. Skipping.`);
                 return;
             }
             // Configured organization or the owner of the repository
-            const org = core.getInput('org') || repo.owner;
+            const org = core.getInput('org') || gh.owner;
             // The name of the sync repository including organization
             const syncRepo = core.getInput('sync_repo');
             // const signingKey = core.getInput('signingKey') || ''
@@ -72,7 +72,7 @@ function run() {
             const syncYmlPath = path_1.default.join(sharedDir, core.getInput('sync_file') || 'sync.yml');
             // GIT Configuration Settings
             const authorEmail = core.getInput('author_email') || 'benji@devnw.com';
-            const authorName = core.getInput('author_name') || repo.owner;
+            const authorName = core.getInput('author_name') || gh.owner;
             const user = core.getInput('user') || `benjivesterby`;
             // Setup repository path for shared repository
             const sharedRepo = `https://${user}:${token}@github.com/${syncRepo}`;
@@ -118,12 +118,12 @@ function run() {
             core.info(`Checking ${items.length} repositories for repositories from ${org} `);
             const reposProducedByThis = items
                 .filter(d => d.templateRepository &&
-                d.templateRepository.name === repo.repo &&
+                d.templateRepository.name === gh.repo &&
                 d.templateRepository.owner.login === org)
                 .map(d => `${d.nameWithOwner}`);
             if (reposProducedByThis.length > 0) {
-                core.info(`Found ${reposProducedByThis.length} repositories which match template ${repo.repo}`);
-                const git = promise_1.default(baseDir);
+                core.info(`Found ${reposProducedByThis.length} repositories which match template ${gh.repo}`);
+                let git = promise_1.default(baseDir);
                 try {
                     yield git.clone(sharedRepo, sharedDir);
                 }
@@ -138,23 +138,22 @@ function run() {
                 const sync = yield yaml_1.default.parseDocument(syncYmlContent).toJSON();
                 let entries = 0;
                 // Go through repositories and check if they exist in the sync file
-                reposProducedByThis.forEach(repo => {
+                for (const repo of reposProducedByThis) {
                     // Iterate through the configurations and update the repositories list for
                     // each configuration for this template
-                    for (let item in sync.group) {
+                    for (const item of sync.group) {
                         // Check for template configs and if the repo is in the list
-                        if (sync.group[item].templates &&
-                            sync.group[item].templates.includes(templateRepo)) {
+                        if (item.templates && item.templates.includes(templateRepo)) {
                             // Check if the current repo is in the list already
                             // TODO: This only does a string compare, should be a regex, or something
-                            if (!sync.group[item].repos.includes(repo)) {
+                            if (!item.repos.includes(repo)) {
                                 core.info(`Updating [${syncRepo}] sync file; adding [${repo}]`);
                                 entries++;
-                                sync.group[item].repos += `${repo}\n`;
+                                item.repos += `${repo}\n`;
                             }
                         }
                     }
-                });
+                }
                 core.info(`Updated [${entries}] configs for template ${templateRepo}`);
                 // Write out to the sync file
                 yield fs_1.promises.writeFile(syncYmlPath, yaml_1.default.stringify(sync));
@@ -162,7 +161,7 @@ function run() {
                 if (syncYmlContent !== yaml_1.default.stringify(sync)) {
                     core.info('Changes found, committing');
                     // Git obj in shared directory
-                    const git = promise_1.default(sharedDir);
+                    git = promise_1.default(sharedDir);
                     yield git.addConfig('user.email', authorEmail);
                     yield git.addConfig('user.name', authorName);
                     yield git.add(syncYmlPath);

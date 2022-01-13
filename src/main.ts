@@ -54,19 +54,19 @@ async function run(): Promise<void> {
     const octokit = github.getOctokit(token, {
       previews: ['baptiste']
     })
-    const {repo} = github.context
+    const {repo: gh} = github.context
 
     // Ensure this is only running on the configured template repository
     const templateRepo = core.getInput('template_repo') || ''
-    if (templateRepo !== repo.repo) {
+    if (templateRepo !== gh.repo) {
       core.info(
-        `This repository [${repo.repo}] is not the configured template repository [${templateRepo}]. Skipping.`
+        `This repository [${gh.repo}] is not the configured template repository [${templateRepo}]. Skipping.`
       )
       return
     }
 
     // Configured organization or the owner of the repository
-    const org = core.getInput('org') || repo.owner
+    const org = core.getInput('org') || gh.owner
 
     // The name of the sync repository including organization
     const syncRepo = core.getInput('sync_repo')
@@ -84,7 +84,7 @@ async function run(): Promise<void> {
 
     // GIT Configuration Settings
     const authorEmail = core.getInput('author_email') || 'benji@devnw.com'
-    const authorName = core.getInput('author_name') || repo.owner
+    const authorName = core.getInput('author_name') || gh.owner
     const user: string = core.getInput('user') || `benjivesterby`
 
     // Setup repository path for shared repository
@@ -144,17 +144,17 @@ async function run(): Promise<void> {
       .filter(
         d =>
           d.templateRepository &&
-          d.templateRepository.name === repo.repo &&
+          d.templateRepository.name === gh.repo &&
           d.templateRepository.owner.login === org
       )
       .map(d => `${d.nameWithOwner}`)
 
     if (reposProducedByThis.length > 0) {
       core.info(
-        `Found ${reposProducedByThis.length} repositories which match template ${repo.repo}`
+        `Found ${reposProducedByThis.length} repositories which match template ${gh.repo}`
       )
 
-      const git = simpleGit(baseDir)
+      let git = simpleGit(baseDir)
 
       try {
         await git.clone(sharedRepo, sharedDir)
@@ -172,25 +172,22 @@ async function run(): Promise<void> {
       let entries = 0
 
       // Go through repositories and check if they exist in the sync file
-      reposProducedByThis.forEach(repo => {
+      for (const repo of reposProducedByThis) {
         // Iterate through the configurations and update the repositories list for
         // each configuration for this template
-        for (let item in sync.group) {
+        for (const item of sync.group) {
           // Check for template configs and if the repo is in the list
-          if (
-            sync.group[item].templates &&
-            sync.group[item].templates.includes(templateRepo)
-          ) {
+          if (item.templates && item.templates.includes(templateRepo)) {
             // Check if the current repo is in the list already
             // TODO: This only does a string compare, should be a regex, or something
-            if (!sync.group[item].repos.includes(repo)) {
+            if (!item.repos.includes(repo)) {
               core.info(`Updating [${syncRepo}] sync file; adding [${repo}]`)
               entries++
-              sync.group[item].repos += `${repo}\n`
+              item.repos += `${repo}\n`
             }
           }
         }
-      })
+      }
 
       core.info(`Updated [${entries}] configs for template ${templateRepo}`)
 
@@ -202,7 +199,7 @@ async function run(): Promise<void> {
         core.info('Changes found, committing')
 
         // Git obj in shared directory
-        const git = simpleGit(sharedDir)
+        git = simpleGit(sharedDir)
 
         await git.addConfig('user.email', authorEmail)
         await git.addConfig('user.name', authorName)
