@@ -146,6 +146,8 @@ function run() {
                 }
             }
             core.info(`Edited ${JSON.stringify(sync)}`);
+            core.info(`Edited As YAML: ${yaml_1.default.stringify(sync)}`);
+            // const newSync = YAML.parseDocument(JSON.stringify(sync))
             // await sync((grp: any) => {
             //   core.info(`${grp.repos}`)
             // });

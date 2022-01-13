@@ -183,7 +183,9 @@ async function run(): Promise<void> {
 
 
     core.info(`Edited ${JSON.stringify(sync)}`)
+    core.info(`Edited As YAML: ${YAML.stringify(sync)}`)
 
+    // const newSync = YAML.parseDocument(JSON.stringify(sync))
     // await sync((grp: any) => {
     //   core.info(`${grp.repos}`)
     // });
