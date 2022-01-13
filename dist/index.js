@@ -131,7 +131,7 @@ function run() {
                 encoding: 'utf-8'
             });
             const sync = yield yaml_1.default.parse(syncYmlContent);
-            core.info(yaml_1.default.stringify(sync.group) || 'no contents');
+            core.info(yaml_1.default.stringify(sync) || 'no contents');
             yield core.info(sync.toJSON() || 'no contents');
             // const updatedReadme = syncYmlContent.replace(
             //   /# Template Repos Start[\s\S]+# Template Repos Stop/,
