@@ -4,11 +4,61 @@
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/benjivesterby/update-sync-for-templates?color=orange&label=Release&sort=semver)
 
 This action is used to update the sync configuration for the
-[BetaHuhn/repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action)
-action. Configuring this will allow for repositories created from a template to
-be auto-configured to be synced from the shared repository.
+[repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action)
+action. Configuring this will allow for repositories created from a configured
+template to be auto-added to the sync.yaml file.
 
 ## Configuring the Action
+
+Create your sync file using the group format as described in the
+   [repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action#sync-the-same-files-to-multiple-repositories)
+
+Add the new templates entry to the sync file
+
+```yaml
+group:
+  - files:
+      - source: file1.txt
+        dest: file1.txt
+      - source: file2.txt
+        dest: file2.txt
+    templates: |
+      devnw/oss-template
+      devnw/template
+    repos: |
+      devnw/plex
+```
+
+Create your workflow (I used
+[`.github/workflows/sync.yml`](https://github.com/devnw/shared/blob/main/.github/workflows/sync.yml))
+
+```yaml
+name: Sync Files
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@main
+      - name: Sync Template Generated Repositories
+        uses: benjivesterby/update-sync-for-templates@main
+        with: 
+          token: "${{ secrets.GH_PAT }}"
+      - name: Run Repo File Sync Action
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          CONFIG_PATH: sync.yml
+          COMMIT_EACH_FILE: false
+          SKIP_PR: true
+          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
+          GIT_NAME: ${{ secrets.GIT_NAME }}
+```
 
 1. Setup the
    [BetaHuhn/repo-file-sync-action](https://github.com/BetaHuhn/repo-file-sync-action)
