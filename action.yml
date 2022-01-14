@@ -1,0 +1,28 @@
+name: 'Update Sync For Template Repositories'
+description: 'An action for updating the sync.yaml file from BetaHuhn/repo-file-sync-action automatically for templates'
+author: 'Benji Vesterby'
+inputs:
+  token:
+    required: true
+    description: 'A personal access token that can access your org repos, see https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token for more.'
+  sync_file:
+    required: false
+    description: 'The path to the sync.yml to update'
+    default: 'sync.yml'
+  org:
+    required: false
+    description: 'The org to query for template useage'
+  author_name:
+    required: false
+    description: 'The name of the user that will be displayed as the author of the commit'
+    default: 'github-actions[bot]'
+  author_email:
+    required: false
+    description: 'The email of the user that will be displayed as the author of the commit'
+    default: '41898282+github-actions[bot]@users.noreply.github.com'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
+branding:
+  color: 'gray-dark'
+  icon: 'git-branch'
