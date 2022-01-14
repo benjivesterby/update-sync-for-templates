@@ -55,9 +55,6 @@ jobs:
           GH_PAT: ${{ secrets.GH_PAT }}
           CONFIG_PATH: sync.yml
           COMMIT_EACH_FILE: false
-          SKIP_PR: true
-          GIT_EMAIL: ${{ secrets.GIT_EMAIL }}
-          GIT_NAME: ${{ secrets.GIT_NAME }}
 ```
 
 1. Setup the
@@ -85,15 +82,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.4.0
-      - name: Shared Template Sync Update 
-        uses: benjivesterby/update-sync-for-templates@latest
+      - name: Sync Template Generated Repositories
+        uses: benjivesterby/update-sync-for-templates@latest # <-- This is the action
         with: 
-          token: "${{ secrets.GH_PAT }}" # Personal Access Token Is Required
-          org: "devnw"
-          template_repo: "oss-template"
-          sync_repo: "devnw/shared"
-          sync_file: "sync.yml"
+          token: "${{ secrets.GH_PAT }}"
+      - name: Run Repo File Sync Action
+        uses: BetaHuhn/repo-file-sync-action@latest
+        with:
+          GH_PAT: ${{ secrets.GH_PAT }}
+          CONFIG_PATH: sync.yml
+          COMMIT_EACH_FILE: false
 ```
+
+## Personal Access Token
+
+In order for the Action to access your repositories you have to specify a
+[Personal Access
+Token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)
+as the value for GH_PAT (GITHUB_TOKEN will not work). The PAT needs the full
+repo scope.
 
 ## Options
 
