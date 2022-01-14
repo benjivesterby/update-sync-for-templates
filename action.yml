@@ -21,7 +21,7 @@ inputs:
     description: 'The email of the user that will be displayed as the author of the commit'
     default: '41898282+github-actions[bot]@users.noreply.github.com'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   color: 'gray-dark'
