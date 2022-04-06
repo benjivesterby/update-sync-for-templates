@@ -34,7 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "json": "^11.0.0",
     "simple-git": "^3.5.0",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.0"
   },
   "devDependencies": {
     "@types/jest": "^27.4.1",
