@@ -31,7 +31,7 @@
   "dependencies": {
     "@actions/core": "^1.8.2",
     "@actions/github": "^5.0.3",
-    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
     "json": "^11.0.0",
     "simple-git": "^3.7.1",
     "yaml": "^2.1.0"
