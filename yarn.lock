@@ -2,11 +2,12 @@
 # yarn lockfile v1
 
 
-"@actions/core@^1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.9.0.tgz#20c1baac5d4bd2508ba1fc3e5f3fc4b8a80d4082"
+"@actions/core@^1.9.1":
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/@actions/core/-/core-1.9.1.tgz#97c0201b1f9856df4f7c3a375cdcdb0c2a2f750b"
   dependencies:
     "@actions/http-client" "^2.0.1"
+    uuid "^8.3.2"
 
 "@actions/github@^5.0.3":
   version "5.0.3"
@@ -3257,6 +3258,10 @@ uri-js@^4.2.2:
   resolved "https://registry.npmjs.org/uri-js/-/uri-js-4.2.2.tgz"
   dependencies:
     punycode "^2.1.0"
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
 
 v8-compile-cache@^2.0.3:
   version "2.3.0"
