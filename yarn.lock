@@ -3054,9 +3054,9 @@ signal-exit@^3.0.7:
   version "3.0.7"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.7.tgz#a9a1767f8af84155114eaabd73f99273c8f59ad9"
 
-simple-git@^3.12.0:
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.12.0.tgz#12fa8e762d8d9629fb1c72a0e2b4e6ae5b1f11e8"
+simple-git@^3.15.0:
+  version "3.15.0"
+  resolved "https://registry.yarnpkg.com/simple-git/-/simple-git-3.15.0.tgz#301a95a943c4f9b0a21d051eb6e6d0ffe4c9754f"
   dependencies:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
