@@ -1008,21 +1008,14 @@
     semver "^7.3.7"
     tsutils "^3.21.0"
 
-"@typescript-eslint/parser@^5.59.1":
-  version "5.59.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.59.1.tgz#73c2c12127c5c1182d2e5b71a8fa2a85d215cbb4"
+"@typescript-eslint/parser@^5.59.2":
+  version "5.59.2"
+  resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-5.59.2.tgz#c2c443247901d95865b9f77332d9eee7c55655e8"
   dependencies:
-    "@typescript-eslint/scope-manager" "5.59.1"
-    "@typescript-eslint/types" "5.59.1"
-    "@typescript-eslint/typescript-estree" "5.59.1"
+    "@typescript-eslint/scope-manager" "5.59.2"
+    "@typescript-eslint/types" "5.59.2"
+    "@typescript-eslint/typescript-estree" "5.59.2"
     debug "^4.3.4"
-
-"@typescript-eslint/scope-manager@5.59.1":
-  version "5.59.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/scope-manager/-/scope-manager-5.59.1.tgz#8a20222719cebc5198618a5d44113705b51fd7fe"
-  dependencies:
-    "@typescript-eslint/types" "5.59.1"
-    "@typescript-eslint/visitor-keys" "5.59.1"
 
 "@typescript-eslint/scope-manager@5.59.2":
   version "5.59.2"
@@ -1040,25 +1033,9 @@
     debug "^4.3.4"
     tsutils "^3.21.0"
 
-"@typescript-eslint/types@5.59.1":
-  version "5.59.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-5.59.1.tgz#03f3fedd1c044cb336ebc34cc7855f121991f41d"
-
 "@typescript-eslint/types@5.59.2":
   version "5.59.2"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-5.59.2.tgz#b511d2b9847fe277c5cb002a2318bd329ef4f655"
-
-"@typescript-eslint/typescript-estree@5.59.1":
-  version "5.59.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-5.59.1.tgz#4aa546d27fd0d477c618f0ca00b483f0ec84c43c"
-  dependencies:
-    "@typescript-eslint/types" "5.59.1"
-    "@typescript-eslint/visitor-keys" "5.59.1"
-    debug "^4.3.4"
-    globby "^11.1.0"
-    is-glob "^4.0.3"
-    semver "^7.3.7"
-    tsutils "^3.21.0"
 
 "@typescript-eslint/typescript-estree@5.59.2":
   version "5.59.2"
@@ -1084,13 +1061,6 @@
     "@typescript-eslint/typescript-estree" "5.59.2"
     eslint-scope "^5.1.1"
     semver "^7.3.7"
-
-"@typescript-eslint/visitor-keys@5.59.1":
-  version "5.59.1"
-  resolved "https://registry.yarnpkg.com/@typescript-eslint/visitor-keys/-/visitor-keys-5.59.1.tgz#0d96c36efb6560d7fb8eb85de10442c10d8f6058"
-  dependencies:
-    "@typescript-eslint/types" "5.59.1"
-    eslint-visitor-keys "^3.3.0"
 
 "@typescript-eslint/visitor-keys@5.59.2":
   version "5.59.2"
